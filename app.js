@@ -8,6 +8,8 @@ const port = 3080;
 
 const server = http.createServer(function (req, res) {
 
+    console.log(req.method);
+
     var resposta;
     const urlParse = url.parse(req.url, true)
 
@@ -74,6 +76,37 @@ const server = http.createServer(function (req, res) {
                 res.setHeader('content-type', 'application/json');
                 res.end(JSON.stringify(result));
             });
+        });
+    }
+
+    else if(urlParse.pathname == '/enviar-email'){
+        
+        var nodemailer = require('nodemailer');
+
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, 
+            service: 'gmail',
+            auth: {
+                user: 'Remetente',
+                pass: 'Senha do Remetente'
+            }
+        });
+
+        var mailOptions = {
+            from: 'Remetente',
+            to: 'Destinatario',
+            subject: 'Email enviado usando o Node',
+            text: 'Meu primeiro email enviado usando o node kkk'
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
         });
     }
 
